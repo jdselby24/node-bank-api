@@ -25,6 +25,9 @@ const bank = {
 
     getAccountsBlt: (db, callback, query) => {
         var accountsData = db.collection('accounts');
+        accountsData.find({account: { balance: { $lt: query } } }).toArray((err, accounts) => {
+            callback(accounts);
+        })
     },
 
     addAccount: (db, customerName, account) => {
