@@ -25,9 +25,16 @@ const bank = {
 
     getAccountsBlt: (db, callback, query) => {
         var accountsData = db.collection('accounts');
-        console.log(query)
         query = parseFloat(query)
         accountsData.find({"account.balance": { $lt: query } }).toArray((err, accounts) => {
+            callback(accounts);
+        })
+    },
+
+    getAccountsBgt: (db, callback, query) => {
+        var accountsData = db.collection('accounts');
+        query = parseFloat(query)
+        accountsData.find({"account.balance": { $gt: query } }).toArray((err, accounts) => {
             callback(accounts);
         })
     },
@@ -60,10 +67,7 @@ const bankApi = {
             console.log("Connected to MongoDB");
             let db = client.db('bank');
 
-            
-
-            if(typeof req.query.blt !== undefined) {
-                console.log(req.query)
+            if(typeof req.query.blt == "string") {
                 bank.getAccountsBlt(db, (accounts) => {
                     let response = {
                         success: true,
@@ -73,8 +77,16 @@ const bankApi = {
                     res.status(200);
                     res.json(response)
                 }, req.query.blt);
-            } else if(typeof req.query.bgt !== undefined) {
-                
+            } else if(typeof req.query.bgt == "string") {
+                bank.getAccountsBgt(db, (accounts) => {
+                    let response = {
+                        success: true,
+                        message: "Accounts Retreived",
+                        data: accounts
+                    };
+                    res.status(200);
+                    res.json(response)
+                }, req.query.bgt);
             } else {
                 bank.getAccounts(db, (accounts) => {
                     let response = {
