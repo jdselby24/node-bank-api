@@ -1,10 +1,3 @@
-const getCustomers = (db, callback) => {
-    var accountsData = db.collection('accounts');
-    accountsData.find({}, { customer: 1, _id: 0 }).toArray((err, accounts) => {
-        callback(accounts);
-    })
-}
-
 const getAccounts = (db, callback) => {
     var accountsData = db.collection('accounts');
     accountsData.find({}).toArray((err, accounts) => {
@@ -28,12 +21,11 @@ const getAccountsBgt = (db, callback, query) => {
     })
 }
 
-const addAccount = (db, customerName, account) => {
+const addAccount = (db, account) => {
     var accountsData = db.collection('accounts');
-    accountsData.insertOne({customer: customerName, account: account})
+    accountsData.insertOne({account: account})
 }
 
-module.exports.getCustomers = getCustomers;
 module.exports.getAccounts = getAccounts;
 module.exports.getAccountsBlt = getAccountsBlt;
 module.exports.getAccountsBgt = getAccountsBgt;
