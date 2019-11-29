@@ -43,6 +43,11 @@ const bank = {
         var accountsData = db.collection('accounts');
         accountsData.insertOne({customer: customerName, account: account})
     },
+
+    updateAccount: (db, customer, accountNameRef, accountNewData) => {
+        var accountsData = db.collection('accounts');
+        accountsData.update({$and: {customer: { $eq: customer}}, {"account.name": {$eq: accountNameRef}}28, {"account.balance": {$inc: accountNewData.balance});
+    }
 };
 
 const bankApi = {
@@ -100,6 +105,7 @@ const bankApi = {
             }            
         });
     },
+
     addAccount: (req, res) => {
         const customer = req.body.customer
         const account = req.body.account
@@ -115,11 +121,30 @@ const bankApi = {
             res.status(200);
             res.json(response)
         })
+    },
+
+    updateAccount: (req, res) => {
+        const customer = req.body.customer;
+        const accountNameRef = req.body.account_ref;
+        const accountNewData = req.body.account;
+
+        MongoClient.connect(mongodb, { useNewUrlParser: true, useUnifiedTopology: true}, (err, client) => {
+            console.log("Connected to MongoDB");
+            let db = client.db('bank');
+            bank.updateAccount(db, customer, accountNameRef, accountNewData);
+            let response = {
+                success: true,
+                message: "Account Created"
+            };
+            res.status(200);
+            res.json(response)
+        })
     }
 }
 
 app.get('/accounts', (req, res) => bankApi.getAccounts(req, res));
-app.post('/accounts', jsonParser,(req, res) => bankApi.addAccount(req, res));
+app.post('/accounts', jsonParser, (req, res) => bankApi.addAccount(req, res));
+app.put('/accounts', jsonParser, (req, res) => bankApi.updateAccount(req, res));
 
 
 app.listen(port, () => {
