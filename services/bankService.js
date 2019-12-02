@@ -26,7 +26,13 @@ const addAccount = (db, account) => {
     accountsData.insertOne({account: account})
 }
 
+const updateAccount = (db, accountNameRef, moneyIn) => {
+    var accountsData = db.collection('accounts');
+    accountsData.updateOne({"account.name": {$eq: {accountNameRef}}}, {$inc: {"account.balance": moneyIn}});
+}
+
 module.exports.getAccounts = getAccounts;
 module.exports.getAccountsBlt = getAccountsBlt;
 module.exports.getAccountsBgt = getAccountsBgt;
 module.exports.addAccount = addAccount;
+module.exports.updateAccount = updateAccount;

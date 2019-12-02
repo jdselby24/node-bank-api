@@ -57,15 +57,16 @@ const addAccount = (req, res) => {
 
 const updateAccount = (req, res) => {
 
-    const customer = req.body.customer;
     const accountNameRef = req.body.account_ref;
-    const accountNewData = req.body.account;
+    const moneyIn = req.body.valueToAdd;
+
+    console.log(req.body)
 
     dbService((db) => {
-        bankService.updateAccount(db, customer, accountNameRef, accountNewData);
+        bankService.updateAccount(db, accountNameRef, moneyIn);
         let response = {
             success: true,
-            message: "Account Created"
+            message: "Account Updated"
         };
         res.status(200);
         res.json(response)
